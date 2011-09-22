@@ -8,7 +8,7 @@
 	<!-- Basic Page Needs
   ================================================== -->
 	<meta charset="utf-8">
-	<title>Your Page Title Here :)</title>
+	<title>Colorspace</title>
 	<meta name="description" content="">
 	<meta name="author" content="">
 	<!--[if lt IE 9]>
@@ -38,46 +38,115 @@
 <body>
 
 	<div class="container">
-		<div class="sixteen columns">
-			<h1 class="remove-bottom" style="margin-top: 40px">Colorizer</h1>
+		<div class="row sixteen columns">
+			<h1 class="remove-bottom" style="margin-top: 40px">Colorspace</h1>
 			<h5>Version 1.0</h5>
 			<hr />
 		</div>
-		<div class="one-third column">
+		<div class="row sixteen columns">
 			<label for="basecolor">Base color</label>
-			<input id="basecolor" type="color">
+			<input id="basecolor" type="color" value="#ff0000">
+			<output for="basecolor"></output>
 		</div>
-		<div id="lightened" class="one-third column">
-			<h3>lighten(@basecolor, '10%')</h3>
+		<div class="row">
+		<div id="lighten" class="four columns">
+			<input name="amount" type="range" min="0" max="100" value="10">
+			<h3>lighten(<span class="basecolor"></span>, <span class="amount"></span>%)</h3>
 			<p></p>
 		</div>
-		<div class="one-third column">
-			<h3>Docs &amp; Support</h3>
-			<p>The easiest way to really get started with Skeleton is to check out the full docs and info at <a href="http://www.getskeleton.com">www.getskeleton.com.</a>. Skeleton is also open-source and has a <a href="https://github.com/dhgamache/skeleton">project on git</a>, so check that out if you want to report bugs or create a pull request. If you have any questions, thoughts, concerns or feedback, please don't hesitate to email me at <a href="mailto:hi@getskeleton.com">hi@getskeleton.com</a>.</p>
+		<div id="darken" class="four columns">
+			<input name="amount" type="range" min="0" max="100" value="10">
+			<h3>darken(<span class="basecolor"></span>, <span class="amount"></span>%)</h3>
+			<p></p>
 		</div>
-
+		<div id="saturate" class="four columns">
+			<input name="amount" type="range" min="0" max="100" value="10">
+			<h3>saturate(<span class="basecolor"></span>, <span class="amount"></span>%)</h3>
+			<p></p>
+		</div>
+		<div id="desaturate" class="four columns">
+			<input name="amount" type="range" min="0" max="100" value="10">
+			<h3>desaturate(<span class="basecolor"></span>, <span class="amount"></span>%)</h3>
+			<p></p>
+		</div>
+		</div>
+		<div class="row">
+		<div id="fadein" class="four columns">
+			<input name="amount" type="range" min="0" max="100" value="10">
+			<h3>fadein(<span class="basecolor"></span>, <span class="amount"></span>%)</h3>
+			<p></p>
+		</div>
+		<div id="fadeout" class="four columns">
+			<input name="amount" type="range" min="0" max="100" value="10">
+			<h3>fadeout(<span class="basecolor"></span>, <span class="amount"></span>%)</h3>
+			<p></p>
+		</div>
+		<div id="spin" class="eight columns">
+			<input name="amount" type="range" min="-180" max="180" value="0">
+			<h3>spin(<span class="basecolor"></span>, <span class="amount"></span>)</h3>
+			<p></p>
+		</div>
+		</div>
 	</div>
 
 	<script src="http://code.jquery.com/jquery-1.6.4.min.js"></script>
 	<script src="javascripts/tabs.js"></script>
 	<script>
+		function toColor(hexColor) {
+			return new less.tree.Color(hexColor.substring(1));
+		}
+		
+		function toPercent(value) {
+			return new less.tree.Dimension(value + '%');
+		}
+	
 		$(function() {
 			$('#basecolor').change(function() {
-				$(this).closest('.column').css('backgroundColor', $(this).val());
+				$(this).parent().css('backgroundColor', $(this).val());
+				$(this).next('output').text($(this).val());
+			});
 				
-				var color = new less.tree.Color($(this).val().substring(1));
-				var amount = new less.tree.Dimension('10%');
-				var lightened = less.tree.functions.lighten(color, amount);
-				
-				$('#lightened')
-					.css('backgroundColor', lightened.toCSS())
-					.find('h3').text('lighten(' + color.toCSS() + ', ' + amount.toCSS() + '%)')
-					.next('p').text(lightened.toCSS());
+			$.fn.extend({ 
+			
+				colorControl: function(options) {
+					var defaults = {
+						baseColor: '#basecolor'
+					}
+					var options = $.extend(defaults, options);
+					
+					var baseColor = $(options.baseColor);
+
+					return this.each(function() {
+						var $this = $(this);
+						var amountInput = $this.find('input[name=amount]');
+						
+						function updateColor() {
+							var base = toColor(baseColor.val());
+							var amount = toPercent(amountInput.val());
+							var color = options.transform(base, amount);
+							
+							$this.css('backgroundColor', color.toCSS());
+							$this.find('h3 .basecolor').text(base.toCSS());
+							$this.find('h3 .amount').text(amount.toCSS());
+							$this.find('p').text(color.toCSS());
+						}
+						
+						$('#basecolor').change(updateColor);
+						amountInput.change(updateColor);
+					});	
+				}
+			
 			});
 			
-			// new less.tree.Color('ff0000') gets you a color
-			// new less.tree.Dimension('10%') gets you the amount
-			// less.tree.functions.lighten(color, amount) does the calculation & returns a Color object
+			$('#lighten').colorControl({transform: less.tree.functions.lighten});
+			$('#darken').colorControl({transform: less.tree.functions.darken});
+			$('#saturate').colorControl({transform: less.tree.functions.saturate});
+			$('#desaturate').colorControl({transform: less.tree.functions.desaturate});
+			$('#fadein').colorControl({transform: less.tree.functions.fadein});
+			$('#fadeout').colorControl({transform: less.tree.functions.fadeout});
+			$('#spin').colorControl({transform: less.tree.functions.spin});
+			
+			$('#basecolor').trigger('change');
 		});
 	</script>
 
