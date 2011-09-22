@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<!--[if lt IE 7 ]><html class="ie ie6" lang="en"> <![endif]-->
+<!--[if IE 7 ]><html class="ie ie7" lang="en"> <![endif]-->
+<!--[if IE 8 ]><html class="ie ie8" lang="en"> <![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!--><html lang="en"> <!--<![endif]-->
+<head>
+
+	<meta charset="utf-8">
+	<title>Colorspace</title>
+	<meta name="description" content="">
+	<meta name="author" content="">
+	<!--[if lt IE 9]>
+		<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link rel="stylesheet" href="stylesheets/base.css">
+	<link rel="stylesheet" href="stylesheets/skeleton.css">
+	<link rel="stylesheet" href="stylesheets/layout.css">
+
+	<link rel="shortcut icon" href="images/favicon.ico">
+	<link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+	<link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
+	<link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+	
+	<link rel="stylesheet/less" type="text/css" href="stylesheets/colorspace.less">
+	<script src="javascripts/less-1.1.3.min.js"></script>
+
+</head>
+<body>
+
+	<header>
+	</header>
+	
+	<section class="colorspace">
+		<ul class="transform-palette">
+			<li data-transform="lighten" data-min="0" data-max="100">lighten</li>
+			<li data-transform="darken" data-min="0" data-max="100">darken</li>
+			<li data-transform="saturate" data-min="0" data-max="100">saturate</li>
+			<li data-transform="desaturate" data-min="0" data-max="100">desaturate</li>
+			<li data-transform="fadein" data-min="0" data-max="100">fadein</li>
+			<li data-transform="fadeout" data-min="0" data-max="100">fadeout</li>
+			<li data-transform="spin" data-min="-180" data-max="180">spin</li>
+		</ul>
+		<div class="base-color">
+			<label for="basecolor">Hex</label>
+			<input type="color" name="basecolor" value="#f8eaa7">
+			<output for="basecolor"></output>
+		</div>
+		<ol class="color-transforms">
+		</ol>
+	</section>
+
+	<script src="http://code.jquery.com/jquery-1.6.4.min.js"></script>
+	<script src="http://code.jquery.com/ui/1.8.16/jquery-ui.min.js"></script>
+	<script src="javascripts/tabs.js"></script>
+	<script>
+		function toColor(hexColor) {
+			return new less.tree.Color(hexColor.substring(1));
+		}
+		
+		function toPercent(value) {
+			return new less.tree.Dimension(value + '%');
+		}
+	
+		$(function() {
+			$.fn.extend({ 
+			
+				colorspace: function(options) {
+					var defaults = {
+					}
+					var options = $.extend(defaults, options);
+					
+					return this.each(function() {
+						var baseColor = $(this).find('.base-color input[name=basecolor]');
+						var colorTransforms = $(this).find('.color-transforms');
+						var transformPalette = $(this).find('.transform-palette');
+
+						// iterates over transforms and updates their color by applying their function to the output of the previous transform
+						var updateColors = function() {
+							var startColor = null;
+							var endColor = toColor(baseColor.val());
+							colorTransforms.find('li').each(function() {
+								startColor = endColor;
+								var transformFunction = less.tree.functions[$(this).data('transform')];
+								var amount = toPercent(10);
+								endColor = transformFunction(startColor, amount);
+								$(this).css('backgroundColor', endColor.toCSS()).data('end-color', endColor);
+							});
+						};
+						
+						// if the base color changes update the background and trigger update on the first transform
+						baseColor.change(function() {
+							$(this).closest('.base-color').css('backgroundColor', $(this).val());
+							updateColors();
+						});
+
+						// when transforms are sorted update them all
+						colorTransforms.sortable({
+							receive: function(event, ui) {
+								console.log(event, ui);
+							},
+							update: updateColors
+						});
+						
+						// transforms can be dragged in from the palette
+						transformPalette.find('li').draggable({
+							connectToSortable: colorTransforms,
+							helper: 'clone',
+							revert: 'invalid'
+						});
+						
+						// handle color change on transforms by chaining
+						colorTransforms.bind('updatecolor', function(event) {
+						});
+						
+						baseColor.trigger('change');
+					});	
+				}
+			
+			});
+			
+			$('.colorspace').colorspace();
+		});
+	</script>
+
+</body>
+</html>

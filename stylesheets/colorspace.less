@@ -1,0 +1,55 @@
+@color-box-size: 150px;
+@spacing: 5px;
+
+@palette-background: #000;
+@box-border: rgba(0, 0, 0, 0.5);
+
+li {
+	list-style-type: none;
+}
+
+.box {
+	border: @spacing solid @box-border;
+	display: inline-block;
+	height: @color-box-size;
+	overflow: hidden;
+	vertical-align: middle;
+	width: @color-box-size;
+
+  -webkit-transition: background-color 1s linear;  
+     -moz-transition: background-color 1s linear;  
+      -ms-transition: background-color 1s linear;  
+       -o-transition: background-color 1s linear;  
+          transition: background-color 1s linear;  
+}
+
+.transform-palette {
+	background-color: @palette-background;
+	position: absolute;
+	right: 0;
+}
+	
+.base-color {
+	.box;
+	margin: 4 * @spacing @spacing;
+}
+	
+.color-transforms {
+	background-color: #eee;
+	border: @spacing dashed lighten(@box-border, 50%);
+	display: inline-block;
+	height: @color-box-size + (2 * @spacing);
+	margin: @spacing;
+	min-width: @color-box-size + (2 * @spacing);
+	padding: @spacing;
+	vertical-align: middle;
+
+	li {
+		.box;
+		margin-right: @spacing;
+		
+		&:last-child {
+			margin-right: 0;
+		}
+	}
+}
