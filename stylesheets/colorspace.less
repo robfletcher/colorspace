@@ -9,6 +9,7 @@ li {
 }
 
 .box {
+	.round;
 	border: @spacing solid @box-border;
 	display: inline-block;
 	height: @color-box-size;
@@ -23,6 +24,12 @@ li {
           transition: background-color 1s linear;  
 }
 
+.round(@radius: 12px) {	
+  -webkit-border-radius: @radius; 
+     -moz-border-radius: @radius; 
+          border-radius: @radius; 
+}
+
 .transform-palette {
 	background-color: @palette-background;
 	position: absolute;
@@ -35,6 +42,7 @@ li {
 }
 	
 .color-transforms {
+	.round;
 	background-color: #eee;
 	border: @spacing dashed lighten(@box-border, 50%);
 	display: inline-block;
