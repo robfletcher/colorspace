@@ -55,6 +55,7 @@ li {
 	li {
 		.box;
 		margin-right: @spacing;
+		position: relative;
 		
 		&:last-child {
 			margin-right: 0;
@@ -63,6 +64,14 @@ li {
 		code {
 			display: inline-block;
 			margin: @spacing;
+		}
+		
+		input {
+			border: 0;
+			bottom: 0;
+			margin: @spacing;
+			position: absolute;
+			width: @color-box-size - (2 * @spacing);
 		}
 		
 		output {

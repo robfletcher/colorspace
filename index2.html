@@ -91,6 +91,7 @@
 							newItem.html('<code><span class="fn"></span>(<span class="start-color"></span>, <span class="amount"></span><span class="unit"></span>)</code>');
 							newItem.find('.fn').text(ui.item.data('transform'));
 							newItem.find('.unit').text(ui.item.data('unit'));
+							newItem.append('<output></output>');
 							newItem.append($('<input>', {
 								type: 'range',
 								name: 'amount',
@@ -98,7 +99,6 @@
 								max: ui.item.data('max'),
 								value: '10'
 							}));
-							newItem.append('<output></output>');
 						};
 						
 						// if the base color changes update the background and trigger update on the first transform
