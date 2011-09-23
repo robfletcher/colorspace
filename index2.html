@@ -34,22 +34,13 @@
 	</header>
 	
 	<section class="colorspace">
-		<ul class="transform-palette">
-			<li data-transform="lighten" data-min="0" data-max="100">lighten</li>
-			<li data-transform="darken" data-min="0" data-max="100">darken</li>
-			<li data-transform="saturate" data-min="0" data-max="100">saturate</li>
-			<li data-transform="desaturate" data-min="0" data-max="100">desaturate</li>
-			<li data-transform="fadein" data-min="0" data-max="100">fadein</li>
-			<li data-transform="fadeout" data-min="0" data-max="100">fadeout</li>
-			<li data-transform="spin" data-min="-180" data-max="180">spin</li>
-		</ul>
+		<ul class="transform-palette"></ul>
 		<div class="base-color">
 			<label for="basecolor">Hex</label>
 			<input type="color" name="basecolor" value="#f8eaa7">
 			<output for="basecolor"></output>
 		</div>
-		<ol class="color-transforms">
-		</ol>
+		<ol class="color-transforms"></ol>
 	</section>
 
 	<script src="http://code.jquery.com/jquery-1.6.4.min.js"></script>
@@ -76,7 +67,7 @@
 						var baseColor = $(this).find('.base-color input[name=basecolor]');
 						var colorTransforms = $(this).find('.color-transforms');
 						var transformPalette = $(this).find('.transform-palette');
-
+						
 						// iterates over transforms and updates their color by applying their function to the output of the previous transform
 						var updateColors = function() {
 							var startColor = null;
@@ -84,10 +75,30 @@
 							colorTransforms.find('li').each(function() {
 								startColor = endColor;
 								var transformFunction = less.tree.functions[$(this).data('transform')];
-								var amount = toPercent(10);
+								var amount = toPercent($(this).find('input[name=amount]').val());
 								endColor = transformFunction(startColor, amount);
 								$(this).css('backgroundColor', endColor.toCSS()).data('end-color', endColor);
+								$(this).find('.start-color').text(startColor.toCSS());
+								$(this).find('.amount').text(amount.toCSS());
+								$(this).find('output').text(endColor.toCSS());
 							});
+						};
+						
+						// initializes a new transform tool when it is added to the sortable
+						var initializeTransform = function(event, ui) {
+							var newItem = $(this).find('li:not(:has(code))');
+							newItem.data('transform', ui.item.data('transform'));
+							newItem.html('<code><span class="fn"></span>(<span class="start-color"></span>, <span class="amount"></span><span class="unit"></span>)</code>');
+							newItem.find('.fn').text(ui.item.data('transform'));
+							newItem.find('.unit').text(ui.item.data('unit'));
+							newItem.append($('<input>', {
+								type: 'range',
+								name: 'amount',
+								min: ui.item.data('min'),
+								max: ui.item.data('max'),
+								value: '10'
+							}));
+							newItem.append('<output></output>');
 						};
 						
 						// if the base color changes update the background and trigger update on the first transform
@@ -98,21 +109,27 @@
 
 						// when transforms are sorted update them all
 						colorTransforms.sortable({
-							receive: function(event, ui) {
-								console.log(event, ui);
-							},
+							receive: initializeTransform,
 							update: updateColors
 						});
 						
-						// transforms can be dragged in from the palette
+						// when the amount changes in a transform update them all
+						colorTransforms.delegate('input', 'change', updateColors);
+						
+						// initialize palette with a droppable for each transform function
+						$.each(['lighten', 'darken', 'saturate', 'desaturate', 'fadein', 'fadeout'], function(i, fn) {
+							var tool = $('<li/>', {
+								text: fn
+							}).data('transform', fn).data('unit', '%').data('min', 0).data('max', 100);
+							transformPalette.append(tool);
+						});
+						var spinTool = $('<li>spin</li>').data('transform', 'spin').data('min', -180).data('max', 180);
+						transformPalette.append(spinTool);
+						
 						transformPalette.find('li').draggable({
 							connectToSortable: colorTransforms,
 							helper: 'clone',
 							revert: 'invalid'
-						});
-						
-						// handle color change on transforms by chaining
-						colorTransforms.bind('updatecolor', function(event) {
 						});
 						
 						baseColor.trigger('change');
