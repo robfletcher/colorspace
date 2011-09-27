@@ -1,4 +1,5 @@
 @color-box-size: 150px;
+@icon-size: 50px;
 @spacing: 5px;
 
 @palette-background: #000;
@@ -31,9 +32,17 @@ li {
 }
 
 .transform-palette {
+	.round(6px);
 	background-color: @palette-background;
+	margin: @spacing;
 	position: absolute;
 	right: 0;
+	
+	li {
+		display: block;
+		height: @icon-size;
+		width: @icon-size;
+	}
 }
 	
 .base-color {
@@ -48,8 +57,10 @@ li {
 	display: inline-block;
 	height: @color-box-size + (2 * @spacing);
 	margin: @spacing;
-	min-width: @color-box-size + (2 * @spacing);
-	padding: @spacing;
+	padding-top: @spacing;
+	padding-right: (3 * @spacing) + @color-box-size;
+	padding-bottom: @spacing;
+	padding-left: @spacing;
 	vertical-align: middle;
 
 	li {
