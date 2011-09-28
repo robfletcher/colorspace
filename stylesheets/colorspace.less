@@ -2,11 +2,14 @@
 @icon-size: 50px;
 @spacing: 5px;
 
+@drop-background: fadeout(#eee, 30%);
 @palette-background: #000;
 @box-border: rgba(0, 0, 0, 0.5);
+@drop-border: lighten(@box-border, 50%);
 
 li {
 	list-style-type: none;
+	margin: 0;
 }
 
 .box {
@@ -31,6 +34,13 @@ li {
           border-radius: @radius; 
 }
 
+.dropabble-box {
+	.round;
+	background-color: @drop-background;
+	border: @spacing dashed @drop-border;
+}
+
+
 .transform-palette {
 	.round(6px);
 	background-color: @palette-background;
@@ -51,9 +61,7 @@ li {
 }
 	
 .color-transforms {
-	.round;
-	background-color: #eee;
-	border: @spacing dashed lighten(@box-border, 50%);
+	.dropabble-box;
 	display: inline-block;
 	height: @color-box-size + (2 * @spacing);
 	margin: @spacing;
@@ -92,4 +100,11 @@ li {
 			text-align: center;
 		}
 	}
+}
+
+.trash {
+	.dropabble-box;
+	width: 2 * @color-box-size;
+	height: @color-box-size;
+	margin: 0 auto;
 }

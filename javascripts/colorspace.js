@@ -69,6 +69,12 @@ $(function() {
 				// when the amount changes in a transform update them all
 				colorTransforms.delegate('input', 'change', updateColors);
 				
+				$('.trash').droppable({
+					drop: function(event, ui) {
+						ui.draggable.remove();
+					}
+				});
+				
 				// initialize palette with a droppable for each transform function
 				$.each(['lighten', 'darken', 'saturate', 'desaturate', 'fadein', 'fadeout'], function(i, fn) {
 					var tool = $('<li/>', {
