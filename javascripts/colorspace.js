@@ -78,11 +78,13 @@ $(function() {
 				// initialize palette with a droppable for each transform function
 				$.each(['lighten', 'darken', 'saturate', 'desaturate', 'fadein', 'fadeout'], function(i, fn) {
 					var tool = $('<li/>', {
-						text: fn
+						'class': fn,
+						text: fn,
+						title: fn
 					}).data('transform', fn).data('unit', '%').data('min', 0).data('max', 100);
 					transformPalette.append(tool);
 				});
-				var spinTool = $('<li>spin</li>').data('transform', 'spin').data('min', -180).data('max', 180);
+				var spinTool = $('<li class="spin" title="spin">spin</li>').data('transform', 'spin').data('min', -180).data('max', 180);
 				transformPalette.append(spinTool);
 				
 				transformPalette.find('li').draggable({

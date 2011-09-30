@@ -3,7 +3,8 @@
 @spacing: 5px;
 
 @drop-background: fadeout(#eee, 30%);
-@palette-background: #000;
+@palette-background: #ccc;
+@palette-icon: #000;
 @box-border: rgba(0, 0, 0, 0.5);
 @drop-border: lighten(@box-border, 50%);
 
@@ -21,11 +22,11 @@ li {
 	vertical-align: middle;
 	width: @color-box-size;
 
-  -webkit-transition: background-color 1s linear;  
-     -moz-transition: background-color 1s linear;  
-      -ms-transition: background-color 1s linear;  
-       -o-transition: background-color 1s linear;  
-          transition: background-color 1s linear;  
+  -webkit-transition: background-color .1s linear;  
+     -moz-transition: background-color .1s linear;  
+      -ms-transition: background-color .1s linear;  
+       -o-transition: background-color .1s linear;  
+          transition: background-color .1s linear;  
 }
 
 .round(@radius: 12px) {	
@@ -42,22 +43,71 @@ li {
 
 
 .transform-palette {
-	.round(6px);
+	.round(@icon-size / 2);
 	background-color: @palette-background;
 	margin: @spacing;
 	position: absolute;
 	right: 0;
 	
 	li {
+		.round(@icon-size / 2);
+		background-color: @palette-icon;
+		background-repeat: no-repeat;
+		background-position: 50% 50%;
 		display: block;
+		margin: @spacing;
+		text-indent: -9999px;
 		height: @icon-size;
 		width: @icon-size;
+		
+		&.lighten {
+			background-image: url(../images/lighten.png);
+		}
+		&.darken {
+			background-image: url(../images/darken.png);
+		}
+		&.saturate {
+			background-image: url(../images/saturate.png);
+		}
+		&.desaturate {
+			background-image: url(../images/desaturate.png);
+		}
+		&.fadein {
+			background-image: url(../images/fadein.png);
+		}
+		&.fadeout {
+			background-image: url(../images/fadeout.png);
+		}
+		&.spin {
+			background-image: url(../images/spin.png);
+		}
 	}
 }
 	
 .base-color {
 	.box;
 	margin: 4 * @spacing @spacing;
+	position: relative;
+
+	label {
+		display: block;
+		margin: @spacing;
+	}
+	
+	input {
+		bottom: 0;
+		margin: @spacing;
+		padding: @spacing;
+		position: absolute;
+		width: @color-box-size - (4 * @spacing);
+	}
+	
+	output {
+		display: block;
+		font-weight: bold;
+		margin: @spacing;
+		text-align: center;
+	}
 }
 	
 .color-transforms {
@@ -65,10 +115,8 @@ li {
 	display: inline-block;
 	height: @color-box-size + (2 * @spacing);
 	margin: @spacing;
-	padding-top: @spacing;
-	padding-right: (3 * @spacing) + @color-box-size;
-	padding-bottom: @spacing;
-	padding-left: @spacing;
+	min-width: @color-box-size + (2 * @spacing);
+	padding: @spacing;
 	vertical-align: middle;
 
 	li {
