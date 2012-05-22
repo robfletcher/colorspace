@@ -11,7 +11,7 @@
     <link href="assets/bootstrap/css/bootstrap.css" rel="stylesheet">
     <link href="assets/bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
     <link href="assets/colorspace.less" type="text/css" rel="stylesheet/less">
-    <script src="assets/lesscss/less-1.3.0.min.js"></script>
+    <script src="assets/lesscss/less.min.js"></script>
 
     <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
@@ -34,18 +34,18 @@
         <h1>Colorspace <small>a LESS color mixing tool</small></h1>
       </div>
 
-      <table class="color-grid" data-ng-controller="ColorspaceCtrl">
+      <table class="color-grid" data-ng-controller="GridCtrl">
         <tr data-ng-repeat="baseColor in baseColors">
           <th class="base-color" style="background-color: {{baseColor.color}};">{{baseColor.color}}</th>
         </tr>
       </table>
 
-      <form class="well form-horizontal">
+      <form class="well form-horizontal" data-ng-controller="BaseColorFormCtrl">
         <div class="control-group">
           <label class="control-label" for="color">Base color:</label>
           <div class="controls">
-            <input id="color" type="color" data-ng-model="color" value="{{baseColor.color}}">
-            <span class="help-inline">Select a base color to start.</span>
+            <input id="color" type="color" data-ng-model="color" ng-change="changeColor()" class="input-mini">
+            <span class="help-inline" style="color: {{color}};">Select a base color to start.</span>
           </div>
         </div>
       </form>
@@ -55,9 +55,9 @@
     <!-- Le javascript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="assets/jquery/jquery-1.7.2.min.js"></script>
+    <script src="assets/jquery/jquery.min.js"></script>
     <script src="assets/bootstrap/js/bootstrap.min.js"></script>
-    <script src="assets/angular/angular-1.0.0rc8.min.js"></script>
+    <script src="assets/angular/angular.min.js"></script>
     <script src="assets/colorspace.js"></script>
 
   </body>
